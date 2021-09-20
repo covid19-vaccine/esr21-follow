@@ -5,7 +5,7 @@ from django.db.models import Q
 from edc_constants.constants import NOT_APPLICABLE
 from edc_model_wrapper import ModelWrapper
 
-from ..models import Call, Log, LogEntry
+from edc_call_manager.models import Call, Log, LogEntry
 from .log_entry_model_wrapper import LogEntryModelWrapper
 
 

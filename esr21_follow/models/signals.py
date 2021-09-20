@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from ..models.worklist import WorkList
-from .call_models import LogEntry
+from edc_call_manager.models import LogEntry
 
 
 @receiver(post_save, weak=False, sender=LogEntry,
@@ -14,27 +14,12 @@ def cal_log_entry_on_post_save(sender, instance, using, raw, **kwargs):
         # Update worklist
         try:
             work_list = WorkList.objects.get(
-                study_maternal_identifier=instance.study_maternal_identifier)
+                subject_identifier=instance.subject_identifier)
         except WorkList.DoesNotExist:
             pass
         else:
-            if 'none_of_the_above' not in instance.phone_num_success and instance.phone_num_success:
+            if instance.appt:
                 work_list.is_called = True
                 work_list.called_datetime = instance.call_datetime
                 work_list.user_modified=instance.user_modified
                 work_list.save()
-        
-        # Add user to Recruiters group
-        try:
-            recruiters_group = Group.objects.get(name='Recruiters')
-        except Group.DoesNotExist:
-            raise ValidationError('Recruiters group must exist.')
-        else:
-            try:
-                user = User.objects.get(username=instance.user_created)
-            except User.DoesNotExist:
-                raise ValueError(f'The user {instance.user_created}, does not exist.')
-            else:
-                if not User.objects.filter(username=instance.user_created,
-                                       groups__name='Recruiters').exists():
-                    recruiters_group.user_set.add(user)

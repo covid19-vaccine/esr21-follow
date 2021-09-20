@@ -1,1 +1,0 @@
-from .logentry_form_validator import LogEntryFormValidator
