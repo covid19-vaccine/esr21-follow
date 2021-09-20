@@ -16,12 +16,12 @@
 	    {{ result.first_name }}
 	    {{ result.last_name }}
 		</td>
+		<td>{{ result.appt_status }}</td>
+	    <td>{{ result.visit_code  }}</td>
+		<td>{{result.object.appt_datetime}}</td>
 	    <td>{{ result.earliest_date_due }}</td>
 	    <td>{{ result.latest_date_due }}</td>
-	    <td>{{ result.ideal_date_due }}</td>
-	    <td>{{result.object.appt_datetime}}</td>  
-	    <td>{{ result.appt_status }}</td>
-	    <td>{{ result.visit_code  }}</td>  
+	    <td>{{ result.ideal_date_due }}</td>  
 	<!--  end columns  -->
 
     </tr>                     

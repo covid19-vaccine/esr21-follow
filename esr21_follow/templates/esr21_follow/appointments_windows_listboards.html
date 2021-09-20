@@ -95,12 +95,12 @@
     <!-- begin results header -->
     <th>#</th>
     <th>Subject</th>
+    <th>Appt Status</th>
+	<th>Visit Code</th>
+	<th>SCHEDULED DATE</th>
 	<th>EARLIEST DATE DUE</th>
 	<th>IDEAL DATE DUE</th>
 	<th>LATEST DATE DUE</th>
-	<th>SCHEDULED DATE</th>
-	<th>Appt Status</th>
-	<th>Visit Code</th>
     <!-- end results header -->
 {% endblock listboard_table_header %}
 
@@ -117,11 +117,10 @@
 {% endblock listboard_table_button_column %}
 
 {% block listboard_table_columns %}
-	
+	<td>{{ result.appt_status }}</td>
+    <td>{{ result.visit_code  }}</td>
+    <td>{{result.object.appt_datetime}}</td>
     <td>{{ result.earliest_date_due }}</td>
     <td>{{ result.latest_date_due }}</td>
-    <td>{{ result.ideal_date_due }}</td>
-    <td>{{result.object.appt_datetime}}</td>  
-    <td>{{ result.appt_status }}</td>
-    <td>{{ result.visit_code  }}</td>
+    <td>{{ result.ideal_date_due }}</td>  
 {% endblock listboard_table_columns %}

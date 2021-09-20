@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from edc_dashboard.listboard_filter import ListboardFilter, ListboardViewFilters
+from edc_base.utils import get_utcnow
 
 
 class ListboardViewFilters(ListboardViewFilters):
@@ -8,12 +11,12 @@ class ListboardViewFilters(ListboardViewFilters):
         label='All',
         lookup={})
 
-    is_called = ListboardFilter(
-        label='Called',
+    today = ListboardFilter(
+        label='Today',
         position=10,
-        lookup={'is_called': True})
+        lookup={'appt_datetime__date': get_utcnow().date()})
 
-    visited = ListboardFilter(
-        label='Visited',
-        position=11,
-        lookup={'visited': True})
+    tomorrow = ListboardFilter(
+        label='Tomorrow',
+        position=10,
+        lookup={'appt_datetime__date': get_utcnow().date() + timedelta(days=1)})
