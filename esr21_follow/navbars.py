@@ -19,4 +19,13 @@ esr21_follow.append_item(
                fa_icon='fa-cogs',
                url_name='esr21_follow:home_url'))
 
+esr21_follow.append_item(
+    NavbarItem(
+        name='appointments',
+        title='appointments',
+        label='appointments',
+        fa_icon='fa-user-plus',
+        url_name=settings.DASHBOARD_URL_NAMES[
+            'esr21_follow_appt_listboard_url']))
+
 site_navbars.register(esr21_follow)
