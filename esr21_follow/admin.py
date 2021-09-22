@@ -16,8 +16,8 @@ from edc_model_admin import ModelAdminBasicMixin
 from edc_model_admin.changelist_buttons import ModelAdminChangelistModelButtonMixin
 
 from .admin_site import esr21_follow_admin
-from .forms import WorkListForm
-from .models import WorkList
+from .forms import BookingForm, WorkListForm
+from .models import Booking, WorkList
 
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,
@@ -52,6 +52,24 @@ class WorkListAdmin(ModelAdminMixin, admin.ModelAdmin):
     instructions = ['Complete this form once per day.']
 
     list_display = ('subject_identifier', 'is_called')
+
+
+@admin.register(Booking, site=esr21_follow_admin)
+class BookingAdmin(ModelAdminMixin, admin.ModelAdmin):
+
+    form = BookingForm
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'first_name',
+                'middle_name',
+                'last_name',
+                'subject_cell',
+                'booking_date',)}),
+        audit_fieldset_tuple)
+
+    list_display = ('first_name', 'last_name', 'subject_cell',)
 
 
 class ModelAdminCallMixin(ModelAdminChangelistModelButtonMixin, ModelAdminBasicMixin):

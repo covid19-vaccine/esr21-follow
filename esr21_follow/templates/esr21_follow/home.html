@@ -8,38 +8,65 @@
 	<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
-	<script type="text/javascript">
-	$(document).ready(function() {
-	    $('#item-identifiers').DataTable();
-	} );
-	</script>
-
-	<script type="text/javascript">
-
-	  jQuery(function() {
-	    jQuery('#users').change(function() {
-	        this.form.submit();
-	    });
-	});
-	</script>
 {% endblock extra-scripts %}
+{% block extra-styles %}
+	{{ block.super }}
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'esr21_follow/css/style.css' %}">
+{% endblock extra-styles %}
 
 
 {% block main %}
 <div class="container">
-	<div class="raw">
-		<div id="div-home-right" class="col-md-4">
-   			Hello
-		</div>
-		<div id="div-home-right" class="col-md-4">
-  			Hello
-		</div>
-		<div id="div-home-right" class="col-md-4">
-  			Hello
-		</div>
-		<div id="div-home-right" class="col-md-12">
-		
+	<h2>Screening bookings</h2>
+	<br>
+	<div class="panel panel-info">
+    	<div class="panel-heading">
+    		<div class="panel-body">
+				<b>Fill form & book:</b> <span class="pull-right">{% csrf_token %}{% crispy form %}</span>
+			</div>
+    	</div>
+  	</div>
+  	<div class="row">
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-blue order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Orders Received</h6>
+                    <h2 class="text-right"><i class="fa fa-cart-plus f-left"></i><span>486</span></h2>
+                    <p class="m-b-0">Completed Orders<span class="f-right">351</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-green order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Orders Received</h6>
+                    <h2 class="text-right"><i class="fa fa-rocket f-left"></i><span>486</span></h2>
+                    <p class="m-b-0">Completed Orders<span class="f-right">351</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-yellow order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Orders Received</h6>
+                    <h2 class="text-right"><i class="fa fa-refresh f-left"></i><span>486</span></h2>
+                    <p class="m-b-0">Completed Orders<span class="f-right">351</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-pink order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Orders Received</h6>
+                    <h2 class="text-right"><i class="fa fa-credit-card f-left"></i><span>486</span></h2>
+                    <p class="m-b-0">Completed Orders<span class="f-right">351</span></p>
+                </div>
+            </div>
+        </div>
 	</div>
-</div>
 </div>
 {% endblock main %}
