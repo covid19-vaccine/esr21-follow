@@ -1,6 +1,13 @@
 from edc_constants.constants import NOT_APPLICABLE, YES, NO, DWTA, OTHER
 
 
+APPT_STATUS = (
+    ('pending', 'Pending'),
+    ('done', 'Done'),
+    ('cancelled', 'Cancelled'),
+)
+
+
 APPT_GRADING = (
     ('firm', 'Firm appointment'),
     ('weak', 'Possible appointment'),

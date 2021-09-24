@@ -6,6 +6,8 @@ from edc_base.model_validators import CellNumber
 from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_search.model_mixins import SearchSlugModelMixin, SearchSlugManager
 
+from ..choices import APPT_STATUS
+
 
 class BookingManager(SearchSlugManager, models.Manager):
     pass
@@ -40,6 +42,13 @@ class Booking(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         null=True,
     )
 
+    appt_status = models.CharField(
+        verbose_name=('Status'),
+        choices=APPT_STATUS,
+        max_length=25,
+        default='pending',
+        db_index=True)
+
     successful = models.BooleanField(default=False)
 
     objects = BookingManager()
@@ -48,10 +57,10 @@ class Booking(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         return f'{self.first_name} {self.last_name}'
 
     def natural_key(self):
-        return (self.cell_number, )
+        return (self.subject_cell, )
 
     def get_search_slug_fields(self):
-        fields = ['cell_number']
+        fields = ['subject_cell', 'first_name', 'last_name', 'middle_name']
         return fields
 
     def save(self, *args, **kwargs):

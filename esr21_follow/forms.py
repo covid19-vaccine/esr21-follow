@@ -1,9 +1,8 @@
-from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
+from django import forms
 
 from edc_base.sites import SiteModelFormMixin
-from edc_form_validators import FormValidatorMixin
 
 from .models import Booking, WorkList
 
@@ -68,7 +67,7 @@ class AppointmentRegistrationForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
         self.helper.form_id = 'appointment_registration'
-        self.helper.form_action = 'esr21_follow:home_url'
+        self.helper.form_action = 'esr21_follow:esr21_follow_booking_listboard_url'
         self.helper.form_class = 'form-inline'
         self.helper.field_template = 'bootstrap3/layout/inline_field.html'
         self.helper.layout = Layout(
