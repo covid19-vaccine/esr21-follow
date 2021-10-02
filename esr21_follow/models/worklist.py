@@ -27,11 +27,6 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         null=True,
         blank=True)
 
-    study_maternal_identifier = models.CharField(
-        verbose_name="Study maternal Subject Identifier",
-        max_length=50,
-        unique=True)
-
     report_datetime = models.DateTimeField(
         verbose_name="Report date ad time",
         null=True,
@@ -51,9 +46,6 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
             date_not_future],
     )
 
-    prev_study = models.CharField(
-        max_length=25)
-
     is_called = models.BooleanField(default=False)
 
     called_datetime = models.DateTimeField(null=True)
@@ -63,7 +55,7 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     objects = WorklistManager()
 
     def __str__(self):
-        return f'{self.subject_identifier} {self.study_maternal_identifier}'
+        return f'{self.subject_identifier} '
 
     def natural_key(self):
         return (self.subject_identifier, )
@@ -71,11 +63,6 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     def get_search_slug_fields(self):
         fields = ['subject_identifier']
         return fields
-
-    def save(self, *args, **kwargs):
-        if not self.subject_identifier:
-            self.subject_identifier = self.study_maternal_identifier
-        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'esr21_follow'

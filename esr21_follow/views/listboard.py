@@ -11,6 +11,7 @@ from edc_dashboard.view_mixins import (
     ListboardFilterViewMixin, SearchFormViewMixin)
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
+from edc_base.utils import get_utcnow
 
 from ..model_wrappers import WorkListModelWrapper
 from ..models import WorkList
@@ -60,9 +61,31 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        identifiers = self.request.GET.get('identifiers', None)
+        print(identifiers, '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+        if identifiers:
+            identifiers = identifiers.split(',')
+            print(identifiers, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+            self.create_worklist(identifiers=identifiers)
+        
+        
         context.update(
             total_results=self.get_queryset().count(),
             called_subject=WorkList.objects.filter(is_called=True).count(),
             visited_subjects=WorkList.objects.filter(visited=True).count(),
         )
         return context
+
+    def create_worklist(self, identifiers=None):
+        """Create a worklist.
+        """
+        for identifier in identifiers:
+            try:
+                WorkList.objects.get(subject_identifier=identifier)
+            except WorkList.DoesNotExist:
+                WorkList.objects.create(
+                    subject_identifier=identifier,
+                    user_created=self.request.user.username,
+                    assigned=self.request.user.username,
+                    date_assigned=get_utcnow().date())
+

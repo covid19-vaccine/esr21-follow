@@ -1,4 +1,4 @@
-import datetime
+from dateutil.parser import parse
 import pandas as pd
 import re
 
@@ -105,23 +105,42 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
                     f"?start_date={start_date}&end_date={end_date}")
 
     def get_context_data(self, **kwargs):
-
         self.object_list = self.get_queryset()
         context = super().get_context_data(**kwargs)
+        object_list = context.get('object_list')
         if self.request.GET.get('export') == 'yes':
             queryset = context.get('object_list')  # from ListView
             self.export(queryset=queryset)
             msg = (f'File generated successfully.  Go to the download list to download file.')
             messages.add_message(
                 self.request, messages.SUCCESS, msg)
+        
+        if self.request.method == 'POST':
+            appt_filter_form = AppointmentsWindowForm(self.request.POST)
+            start_date = (appt_filter_form['start_date'].value())
+            end_date = (appt_filter_form['end_date'].value())
+            
+            start_date = parse(start_date).date()
+            end_date = parse(end_date).date()
+            
+            update_request = self.request.POST.copy()
+            
+            update_request.update({'start_date': start_date})
+            update_request.update({'end_date': end_date})
+            
+            appt_filter_form = AppointmentsWindowForm(update_request)
+            if appt_filter_form.is_valid():
+                start_date = appt_filter_form.data['start_date']
+                end_date = appt_filter_form.data['end_date']
+                queryset = self.get_queryset()
+                object_list = queryset.filter(
+                    appt_datetime__date__gte=start_date,
+                    appt_datetime__date__lte=end_date)
+                wrapped_queryset = self.get_wrapped_queryset(object_list)
+                self.object_list = wrapped_queryset
+
         appointment_downloads = FollowExportFile.objects.filter(
             description='Appointment and windows').order_by('uploaded_at')
-        context.update(appointment_downloads=appointment_downloads)
+        context.update(
+            appointment_downloads=appointment_downloads)
         return context
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        if self.request.GET.get('start_date'):
-            qs = qs.filter(appt_datetime__date__gte=self.request.GET.get('start_date'),
-                           appt_datetime__date__lte=self.request.GET.get('end_date'))
-        return qs

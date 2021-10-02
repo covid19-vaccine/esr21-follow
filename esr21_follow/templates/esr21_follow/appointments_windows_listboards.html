@@ -23,6 +23,14 @@
 	        this.form.submit();
 	    });
 	});
+
+	 function getCheckedCheckboxesFor(checkboxName) {
+	    var checkboxes = document.querySelectorAll('input[name="' + checkboxName + '"]:checked'), values = [];
+	    Array.prototype.forEach.call(checkboxes, function(el) {
+	        values.push(el.value);
+	    });
+	    window.location = "{% url 'esr21_follow:esr21_follow_listboard_url' %}?identifiers=" + values;
+	}
 	</script>
 {% endblock extra-scripts %}
 
@@ -86,6 +94,7 @@
 	
 	|
 	<a href="{% url 'esr21_follow:esr21_follow_appt_listboard_url' %}?export=yes" class="btn btn-sm btn-info">Export</a>
+	<input type="button" class="btn btn-sm btn-info" onclick="getCheckedCheckboxesFor('participant')" value="Create Worklist" />
 	<span class="pull-right">{% csrf_token %}{% crispy form %}</span>
 	
 	&nbsp;&nbsp;
@@ -94,6 +103,7 @@
 {% block listboard_table_header %}
     <!-- begin results header -->
     <th>#</th>
+    <th>Call</th>
     <th>Subject</th>
     <th>Appt Status</th>
 	<th>Visit Code</th>
@@ -104,7 +114,10 @@
     <!-- end results header -->
 {% endblock listboard_table_header %}
 
-{% block listboard_table_button_column %} 
+{% block listboard_table_button_column %}
+	<td>
+		<input name="participant" type="checkbox" value="{{ result.subject_identifier }}"/>
+	</td>
     <td>
     {% dashboard_button result %}
     {% if result.gender == 'M' %}

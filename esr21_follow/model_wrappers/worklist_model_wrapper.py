@@ -2,7 +2,6 @@ from django.apps import apps as django_apps
 from django.conf import settings
 from django.db.models import Q
 
-from edc_constants.constants import NOT_APPLICABLE
 from edc_model_wrapper import ModelWrapper
 
 from edc_call_manager.models import Call, Log, LogEntry
@@ -26,13 +25,7 @@ class WorkListModelWrapper(ModelWrapper):
                 locator = SubjectLocator.objects.get(
                     subject_identifier=self.object.subject_identifier)
             except SubjectLocator.DoesNotExist:
-                try:
-                    locator = SubjectLocator.objects.get(
-                        study_maternal_identifier=self.object.study_maternal_identifier)
-                except SubjectLocator.DoesNotExist:
-                    return None
-                else:
-                    return locator
+                pass
             else:
                 return locator
         return None
@@ -79,9 +72,7 @@ class WorkListModelWrapper(ModelWrapper):
             'subject_phone_alt',
             'subject_work_phone',
             'indirect_contact_cell',
-            'indirect_contact_phone',
-            'caretaker_cell',
-            'caretaker_tel']
+            'indirect_contact_phone',]
         if self.subject_locator:
             phone_choices = ()
             for field_attr in field_attrs:
@@ -99,42 +90,10 @@ class WorkListModelWrapper(ModelWrapper):
         return False
 
     @property
-    def home_visit_required(self):
-        check_fields = [
-            'cell_contact_fail', 'alt_cell_contact_fail',
-            'tel_contact_fail', 'alt_tel_contact_fail',
-            'work_contact_fail', 'cell_alt_contact_fail',
-            'tel_alt_contact_fail', 'cell_resp_person_fail',
-            'tel_resp_person_fail']
-        if not self.locator_phone_numbers:
-            return True
-        elif self.perform_home_visit:
-            return True
-        else:
-            log_entries = LogEntry.objects.filter(
-                ~Q(phone_num_success='none_of_the_above'),
-                study_maternal_identifier=self.object.study_maternal_identifier)
-            log_answers = []
-            for log in log_entries:
-                for var in check_fields:
-                    value = getattr(log, var)
-                    log_answers.append(value)
-            if 'no_response' in log_answers:
-                return False
-            elif 'no_response_vm_not_left' in log_answers:
-                return False
-            elif 'disconnected' in log_answers:
-                return True
-        return False
-
-    @property
     def log_entry(self):
         log = Log.objects.get(id=self.call_log)
 
-        logentry = LogEntry(
-            log=log,
-            prev_study=self.prev_protocol,
-            study_maternal_identifier=self.study_maternal_identifier)
+        logentry = LogEntry(log=log)
         return LogEntryModelWrapper(logentry)
 
     @property
@@ -151,11 +110,11 @@ class WorkListModelWrapper(ModelWrapper):
 
     @property
     def first_name(self):
-        return self.subject_locator.first_name
+        return self.subject_consent.first_name
 
     @property
     def last_name(self):
-        return self.subject_locator.last_name
+        return self.subject_consent.last_name
 
     @property
     def contacts(self):
@@ -169,11 +128,5 @@ class WorkListModelWrapper(ModelWrapper):
 
     @property
     def survey_schedule(self):
-        return None
-
-    @property
-    def prev_protocol(self):
-        if self.maternal_dataset:
-            return self.maternal_dataset.protocol
         return None
 

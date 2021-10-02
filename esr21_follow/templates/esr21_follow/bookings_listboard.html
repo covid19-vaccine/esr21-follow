@@ -133,7 +133,7 @@
   </div>
 </div>
 
-
+{% if results %}
 <div class="panel-heading">
     <div class="panel-body">
         <span class="pull-right">
@@ -144,7 +144,7 @@
 		<!-- end search form -->
     </div>
 </div>
-</div>
+{% endif %}
 
 <div class="row">
       {% for booking in results %}

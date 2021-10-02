@@ -15,6 +15,17 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ETC_DIR = '/etc/'
+
+SITE_ID = 40
+
+REVIEWER_SITE_ID = 1
+
+APP_NAME = 'esr21_follow'
+
+
+LOGIN_REDIRECT_URL = 'home_url'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -35,18 +46,45 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_js_reverse',
+    'simple_history',
+    'multiselectfield',
+    'django_crypto_fields.apps.AppConfig',
+    'django_revision.apps.AppConfig',
+    'edc_action_item.apps.AppConfig',
+    'edc_base.apps.AppConfig',
+    'edc_device.apps.AppConfig',
+    'edc_identifier.apps.AppConfig',
+    'edc_lab_dashboard.apps.AppConfig',
+    'edc_registration.apps.AppConfig',
+    'edc_call_manager.apps.AppConfig',
+    'esr21_subject.apps.AppConfig',
+    'esr21_follow.apps.EdcAppointmentAppConfig',
+    'esr21_follow.apps.EdcProtocolAppConfig',
+    'esr21_follow.apps.EdcTimepointAppConfig',
+    'esr21_follow.apps.EdcVisitTrackingAppConfig',
+    'esr21_follow.apps.EdcSenaiteInterfaceAppConfig',
+    'esr21_follow.apps.EdcLabAppConfig',
+    'esr21_follow.apps.AppConfig'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'edc_dashboard.middleware.DashboardMiddleware',
+    'edc_subject_dashboard.middleware.DashboardMiddleware',
+    'edc_lab_dashboard.middleware.DashboardMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'esr21_follow.urls'
@@ -113,7 +151,21 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEVICE_ID = '99'
+DEVICE_ROLE = 'CentralServer'
 
+DASHBOARD_URL_NAMES = {
+    'esr21_follow_listboard_url': 'esr21_follow:esr21_follow_listboard_url',
+
+}
+
+DASHBOARD_BASE_TEMPLATES = {
+    'listboard_base_template': 'esr21/base.html',
+    'dashboard_base_template': 'esr21/base.html',
+    'esr21_follow_listboard_template': 'esr21_follow/follow_listboard.html',
+    }
+
+LAB_DASHBOARD_URL_NAMES = {}
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
