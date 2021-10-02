@@ -62,10 +62,8 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         identifiers = self.request.GET.get('identifiers', None)
-        print(identifiers, '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
         if identifiers:
             identifiers = identifiers.split(',')
-            print(identifiers, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
             self.create_worklist(identifiers=identifiers)
         
         
