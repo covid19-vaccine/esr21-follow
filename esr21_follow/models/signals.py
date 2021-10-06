@@ -1,5 +1,3 @@
-from django.contrib.auth.models import Group, User
-from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -14,7 +12,7 @@ def cal_log_entry_on_post_save(sender, instance, using, raw, **kwargs):
         # Update worklist
         try:
             work_list = WorkList.objects.get(
-                subject_identifier=instance.subject_identifier)
+                subject_identifier=instance.log.call.subject_identifier)
         except WorkList.DoesNotExist:
             pass
         else:
