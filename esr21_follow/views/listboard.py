@@ -12,11 +12,13 @@ from edc_dashboard.view_mixins import (
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 from edc_base.utils import get_utcnow
+from edc_appointment.models import Appointment
 
 from ..model_wrappers import WorkListModelWrapper
 from ..models import WorkList
 from .filters import ListboardViewFilters
 from .worklist_queryset_view_mixin import WorkListQuerysetViewMixin
+from django.core.exceptions import ValidationError
 
 
 class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
@@ -78,12 +80,23 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
         """Create a worklist.
         """
         for identifier in identifiers:
+            subject_identifier, visit_code = identifier.split('|')
             try:
-                WorkList.objects.get(subject_identifier=identifier)
-            except WorkList.DoesNotExist:
-                WorkList.objects.create(
-                    subject_identifier=identifier,
-                    user_created=self.request.user.username,
-                    assigned=self.request.user.username,
-                    date_assigned=get_utcnow().date())
+                appointment = Appointment.objects.get(
+                    subject_identifier=subject_identifier, visit_code=visit_code)
+            except Appointment.DoesNotExist:
+                raise ValidationError(
+                    f'Missing appointment for visit {visit_code}, {subject_identifier}')
+            else:
+                try:
+                    WorkList.objects.get(
+                        subject_identifier=identifier, visit_code=visit_code)
+                except WorkList.DoesNotExist:
+                    WorkList.objects.create(
+                        subject_identifier=subject_identifier,
+                        user_created=self.request.user.username,
+                        assigned=self.request.user.username,
+                        date_assigned=get_utcnow().date(),
+                        visit_code=visit_code,
+                        appt_datetime=appointment.appt_datetime)
 

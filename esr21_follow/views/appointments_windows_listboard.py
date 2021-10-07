@@ -15,16 +15,22 @@ from edc_dashboard.view_mixins import (
     ListboardFilterViewMixin, SearchFormViewMixin)
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
+from edc_appointment.models import Appointment
+from edc_appointment.constants import IN_PROGRESS_APPT, INCOMPLETE_APPT, COMPLETE_APPT
+from edc_appointment.constants import  NEW_APPT
 
 from ..model_wrappers import FollowAppointmentModelWrapper
 from ..models import FollowExportFile
 from ..forms import AppointmentsWindowForm
 from .download_report_mixin import DownloadReportMixin
 from .filters import ListboardViewFilters
+from .appointment_queryset_view_mixin import AppointmentQuerysetViewMixin
+from edc_base.utils import get_utcnow
 
 
 class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
                                ListboardFilterViewMixin, SearchFormViewMixin,
+                               AppointmentQuerysetViewMixin,
                                DownloadReportMixin, ListboardView, FormView):
 
     form_class = AppointmentsWindowForm
@@ -141,6 +147,67 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
 
         appointment_downloads = FollowExportFile.objects.filter(
             description='Appointment and windows').order_by('uploaded_at')
+            
+            
+            
+        booked_today = Appointment.objects.filter(appt_datetime__date=get_utcnow().date()).count()
+        booked_today_done = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=COMPLETE_APPT).count()
+        booked_today_pending = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=NEW_APPT).count()
+        booked_today_incomplete = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=INCOMPLETE_APPT).count()
+        booked_today_inprogress = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=IN_PROGRESS_APPT).count()
+
+        booked_tomorrow = Appointment.objects.filter(appt_datetime__date=get_utcnow().date()).count()
+        booked_tomorrow_done = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=COMPLETE_APPT).count()
+        booked_tomorrow_pending = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=NEW_APPT).count()
+        booked_tomorrow_incomplete = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=INCOMPLETE_APPT).count()
+        booked_tomorrow_inprogress = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=IN_PROGRESS_APPT).count()
+
+        booked_this_week = Appointment.objects.filter(appt_datetime__date=get_utcnow().date()).count()
+        booked_this_week_done = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=COMPLETE_APPT).count()
+        booked_this_week_pending = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=NEW_APPT).count()
+        booked_this_week_incomplete = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=INCOMPLETE_APPT).count()
+        booked_this_week_inprogress = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date(),
+            appt_status=IN_PROGRESS_APPT).count()
+
+
         context.update(
-            appointment_downloads=appointment_downloads)
+            appointment_downloads=appointment_downloads,
+            booked_today=booked_today,
+            booked_today_done=booked_today_done,
+            booked_today_pending=booked_today_pending,
+            booked_today_incomplete=booked_today_incomplete,
+            booked_today_inprogress=booked_today_inprogress,
+            booked_tomorrow=booked_tomorrow,
+            booked_tomorrow_done=booked_tomorrow_done,
+            booked_tomorrow_pending=booked_tomorrow_pending,
+            booked_tomorrow_incomplete=booked_tomorrow_incomplete,
+            booked_tomorrow_inprogress=booked_tomorrow_inprogress,
+            booked_this_week=booked_this_week,
+            booked_this_week_done=booked_this_week_done,
+            booked_this_week_pending=booked_this_week_pending,
+            booked_this_week_incomplete=booked_this_week_incomplete,
+            booked_this_week_inprogress=booked_this_week_inprogress)
         return context

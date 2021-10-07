@@ -16,6 +16,8 @@
 	    {{ result.first_name }}
 	    {{ result.last_name }}
 		</td>
+		<td>{{ result.visit_code }}</td>
+		<td>{{ result.appt_datetime }}</td>
 	    <td>
 	    	{% if result.call_log_required %}
 				{% include 'esr21_follow/listboard/results_body/add_call_log_entry.html' %}

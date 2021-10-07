@@ -1,10 +1,9 @@
 from edc_call_manager.model_caller import ModelCaller, DAILY
 from edc_call_manager.decorators import register
-from edc_call_manager.models import Call, Log, LogEntry
 
 from esr21_subject.models import PersonalContactInfo
 
-from ..models import WorkList
+from ..models import Call, Log, LogEntry, WorkList
 
 
 @register(WorkList)

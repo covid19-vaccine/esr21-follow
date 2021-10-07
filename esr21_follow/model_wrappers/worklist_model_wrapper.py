@@ -1,10 +1,9 @@
 from django.apps import apps as django_apps
 from django.conf import settings
-from django.db.models import Q
 
 from edc_model_wrapper import ModelWrapper
 
-from edc_call_manager.models import Call, Log, LogEntry
+from ..models import Call, Log, LogEntry
 from .log_entry_model_wrapper import LogEntryModelWrapper
 
 

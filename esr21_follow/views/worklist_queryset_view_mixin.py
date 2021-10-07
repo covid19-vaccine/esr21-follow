@@ -21,6 +21,6 @@ class WorkListQuerysetViewMixin:
 
     def get_queryset_filter_options(self, request, *args, **kwargs):
         options = super().get_queryset_filter_options(request, *args, **kwargs)
-        # options = self.add_username_filter_options(
-        #     options=options, **kwargs)
+        options = self.add_username_filter_options(
+            options=options, **kwargs)
         return options

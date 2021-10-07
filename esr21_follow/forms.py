@@ -4,7 +4,7 @@ from django import forms
 
 from edc_base.sites import SiteModelFormMixin
 
-from .models import Booking, WorkList
+from .models import Booking, WorkList, LogEntry
 
 
 class WorkListForm(SiteModelFormMixin, forms.ModelForm):
@@ -78,3 +78,24 @@ class AppointmentRegistrationForm(forms.Form):
             'booking_date',
             Submit('submit', u'Book participant', css_class="btn btn-sm btn-default")
         )
+
+class LogEntryForm(
+        SiteModelFormMixin, forms.ModelForm):
+
+    phone_num_type = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        label='Which phone number(s) was used for contact?')
+
+    phone_num_success = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        label='Which number(s) were you successful in reaching?')
+
+    class Meta:
+        model = LogEntry
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        choices = self.custom_choices
+        self.fields['phone_num_type'].choices = choices
+        self.fields['phone_num_success'].choices = choices + (('none_of_the_above', 'None of the above'),)

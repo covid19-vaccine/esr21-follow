@@ -24,25 +24,3 @@ class FollowAppointmentModelWrapper(ConsentModelWrapperMixin, ModelWrapper):
         """Returns the gender of the participant.
         """
         return self.subject_consent.gender
-
-    @property
-    def ideal_date_due(self):
-        """Ideal date due to see a participant.
-        """
-        return self.object.timepoint_datetime
-
-    @property
-    def earliest_date_due(self):
-        """Returns the earlist date to see a participant.
-        """
-        visit_definition = self.object.visits.get(self.object.visit_code)
-
-        return self.ideal_date_due - visit_definition.rlower
-
-    @property
-    def latest_date_due(self):
-        """Returns the last date to see a participant.
-        """
-        visit_definition = self.object.visits.get(self.object.visit_code)
-
-        return self.ideal_date_due + visit_definition.rupper

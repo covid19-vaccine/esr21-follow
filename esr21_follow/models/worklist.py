@@ -34,6 +34,10 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
             datetime_not_future],
     )
 
+    appt_datetime = models.DateTimeField(
+        verbose_name=('Appointment date and time'),
+        db_index=True)
+
     assigned = models.CharField(
         verbose_name='User assigned',
         max_length=250,
@@ -46,6 +50,11 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
             date_not_future],
     )
 
+    visit_code = models.CharField(
+        max_length=25,
+        null=True,
+        editable=False)
+
     is_called = models.BooleanField(default=False)
 
     called_datetime = models.DateTimeField(null=True)
@@ -55,10 +64,10 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     objects = WorklistManager()
 
     def __str__(self):
-        return f'{self.subject_identifier} '
+        return f'{self.subject_identifier} {self.visit_code}'
 
     def natural_key(self):
-        return (self.subject_identifier, )
+        return (self.subject_identifier, self.visit_code)
 
     def get_search_slug_fields(self):
         fields = ['subject_identifier']
@@ -67,3 +76,6 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     class Meta:
         app_label = 'esr21_follow'
         verbose_name = 'Worklist'
+        unique_together = (
+            ('subject_identifier', 'visit_code'),
+        )

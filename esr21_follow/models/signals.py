@@ -1,8 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from ..models.worklist import WorkList
-from edc_call_manager.models import LogEntry
+from ..models import LogEntry
 
 
 @receiver(post_save, weak=False, sender=LogEntry,
@@ -10,9 +9,11 @@ from edc_call_manager.models import LogEntry
 def cal_log_entry_on_post_save(sender, instance, using, raw, **kwargs):
     if not raw:
         # Update worklist
+        from ..models import WorkList
         try:
             work_list = WorkList.objects.get(
-                subject_identifier=instance.log.call.subject_identifier)
+                subject_identifier=instance.log.call.subject_identifier,
+                visit_code=instance.log.call.visit_code)
         except WorkList.DoesNotExist:
             pass
         else:

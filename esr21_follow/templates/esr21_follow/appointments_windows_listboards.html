@@ -33,7 +33,64 @@
 	}
 	</script>
 {% endblock extra-scripts %}
+{% block extra_content%}
 
+<div class="panel panel-info">
+  <div class="panel-heading">
+      <div class="panel-body">
+       <!-- begin panel_action_buttons -->
+        <span class="glyphicon glyphicon-ok-sign"></span> Done <span class="badge">{{done}}</span> / <span class="badge">{{total_bookings}}</span>
+        <span class="glyphicon glyphicon-adjust"></span> Pending <span class="badge">{{pending}}</span> / <span class="badge">{{total_bookings}}</span>
+        <span class="glyphicon glyphicon-remove"></span> Cancelled <span class="badge">{{cancelled}}</span> / <span class="badge">{{total_bookings}}</span>
+        &nbsp;&nbsp;
+        <hr>
+       <!-- end panel_action_buttons -->  
+	       		<table class="table table-hover">
+				  <thead>
+				    <tr>
+				      <th scope="col">#</th>
+				      <th scope="col">Scheduled Appointments</th>
+				      <th scope="col">Total booked</th>
+				      <th scope="col">Done</th>
+				      <th scope="col">Pending</th>
+				      <th scope="col">In Complete</th>
+				      <th scope="col">In Progress</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr>
+				      <th scope="row">1</th>
+				      <td>Today</td>
+				      <td>{{ booked_today }}</td>
+				      <td>{{ booked_today_done }}</td>
+				      <td>{{ booked_today_pending }}</td>
+				      <td>{{ booked_today_incomplete }}</td>
+				      <td>{{ booked_today_inprogress }}</td>
+				    </tr>
+				    <tr>
+				      <th scope="row">2</th>
+				      <td>Tomorrow</td>
+				      <td>{{ booked_tomorrow }}</td>
+				      <td>{{ booked_tomorrow_done }}</td>
+				      <td>{{ booked_tomorrow_pending }}</td>
+				      <td>{{ booked_tomorrow_incomplete }}</td>
+				      <td>{{ booked_tomorrow_inprogress }}</td>
+				    </tr>
+				    <tr>
+				      <th scope="row">2</th>
+				      <td>This Week</td>
+				      <td>{{ booked_this_week }}</td>
+				      <td>{{ booked_this_week_done }}</td>
+				      <td>{{ booked_this_week_pending }}</td>
+				      <td>{{ booked_this_week_incomplete }}</td>
+				      <td>{{ booked_this_week_inprogress }}</td>
+				    </tr>
+				  </tbody>
+				</table>
+      </div>
+  </div>
+</div>
+{% endblock extra_content %}
 {% block listboard_panel %}
 {% if results %}
 	<!-- Trigger the modal with a button -->
@@ -108,15 +165,12 @@
     <th>Appt Status</th>
 	<th>Visit Code</th>
 	<th>SCHEDULED DATE</th>
-	<th>EARLIEST DATE DUE</th>
-	<th>IDEAL DATE DUE</th>
-	<th>LATEST DATE DUE</th>
     <!-- end results header -->
 {% endblock listboard_table_header %}
 
 {% block listboard_table_button_column %}
 	<td>
-		<input name="participant" type="checkbox" value="{{ result.subject_identifier }}"/>
+		<input name="participant" type="checkbox" value="{{ result.subject_identifier }}|{{result.visit_code}}"/>
 	</td>
     <td>
     {% dashboard_button result %}
@@ -133,7 +187,4 @@
 	<td>{{ result.appt_status }}</td>
     <td>{{ result.visit_code  }}</td>
     <td>{{result.object.appt_datetime}}</td>
-    <td>{{ result.earliest_date_due }}</td>
-    <td>{{ result.latest_date_due }}</td>
-    <td>{{ result.ideal_date_due }}</td>  
 {% endblock listboard_table_columns %}
