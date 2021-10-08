@@ -97,5 +97,5 @@ class LogEntryForm(
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         choices = self.custom_choices
-        self.fields['phone_num_type'].choices = choices
-        self.fields['phone_num_success'].choices = choices + (('none_of_the_above', 'None of the above'),)
+        # self.fields['phone_num_type'].choices = choices
+        # self.fields['phone_num_success'].choices = choices + (('none_of_the_above', 'None of the above'),)
