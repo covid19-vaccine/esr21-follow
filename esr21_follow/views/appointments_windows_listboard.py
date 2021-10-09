@@ -166,7 +166,8 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
             appt_datetime__date=get_utcnow().date(),
             appt_status=IN_PROGRESS_APPT).count()
 
-        booked_tomorrow = Appointment.objects.filter(appt_datetime__date=get_utcnow().date()).count()
+        booked_tomorrow = Appointment.objects.filter(
+            appt_datetime__date=get_utcnow().date() + timedelta(days=1)).count()
         booked_tomorrow_done = Appointment.objects.filter(
             appt_datetime__date=get_utcnow().date() + timedelta(days=1),
             appt_status=COMPLETE_APPT).count()
@@ -182,11 +183,10 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
 
         date = get_utcnow().date()
         start_week = date - datetime.timedelta(date.weekday())
-        end_week = start_week + datetime.timedelta(4)
-        print(start_week, 'start_week @@@@@@@@@@@@')
-        print(end_week, 'end_week *************')
+        end_week = start_week + datetime.timedelta(6)
 
-        booked_this_week = Appointment.objects.filter(appt_datetime__date=get_utcnow().date()).count()
+        booked_this_week = Appointment.objects.filter(
+            appt_datetime__date__range=[start_week, end_week]).count()
         booked_this_week_done = Appointment.objects.filter(
             appt_datetime__date__range=[start_week, end_week],
             appt_status=COMPLETE_APPT).count()

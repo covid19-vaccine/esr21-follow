@@ -9,7 +9,7 @@ class ListboardViewFilters(ListboardViewFilters):
 
     date = get_utcnow().date()
     start_week = date - datetime.timedelta(date.weekday())
-    end_week = start_week + datetime.timedelta(4)
+    end_week = start_week + datetime.timedelta(6)
 
     all = ListboardFilter(
         name='all',
@@ -36,7 +36,7 @@ class ScreeningListboardViewFilters(ListboardViewFilters):
 
     date = get_utcnow().date()
     start_week = date - datetime.timedelta(date.weekday())
-    end_week = start_week + datetime.timedelta(7)
+    end_week = start_week + datetime.timedelta(6)
 
     all = ListboardFilter(
         name='all',
