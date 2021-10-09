@@ -38,13 +38,15 @@ class WorkListModelWrapper(ModelWrapper):
     @property
     def call(self):
         call = Call.objects.filter(
-            subject_identifier=self.object.subject_identifier).order_by('scheduled').last()
+            subject_identifier=self.object.subject_identifier,
+            visit_code=self.object.visit_code).order_by('scheduled').last()
         return str(call.id)
 
     @property
     def call_log(self):
         call = Call.objects.filter(
-            subject_identifier=self.object.subject_identifier).order_by('scheduled').last()
+            subject_identifier=self.object.subject_identifier,
+            visit_code=self.object.visit_code).order_by('scheduled').last()
         call_log = Log.objects.get(call=call)
         return str(call_log.id)
 
@@ -52,7 +54,8 @@ class WorkListModelWrapper(ModelWrapper):
     def log_entries(self):
         wrapped_entries = []
         call = Call.objects.filter(
-            subject_identifier=self.object.subject_identifier).order_by('scheduled').last()
+            subject_identifier=self.object.subject_identifier,
+            visit_code=self.object.visit_code).order_by('scheduled').last()
         log_entries = LogEntry.objects.filter(
             log__call__subject_identifier=call.subject_identifier).order_by('-call_datetime')[:3]
         for log_entry in log_entries:
