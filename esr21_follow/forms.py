@@ -67,7 +67,7 @@ class AppointmentRegistrationForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
         self.helper.form_id = 'appointment_registration'
-        self.helper.form_action = 'esr21_follow:esr21_follow_booking_listboard_url'
+        self.helper.form_action = 'esr21_follow:esr21_follow_book_listboard_url'
         self.helper.form_class = 'form-inline'
         self.helper.field_template = 'bootstrap3/layout/inline_field.html'
         self.helper.layout = Layout(
@@ -82,20 +82,6 @@ class AppointmentRegistrationForm(forms.Form):
 class LogEntryForm(
         SiteModelFormMixin, forms.ModelForm):
 
-    phone_num_type = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        label='Which phone number(s) was used for contact?')
-
-    phone_num_success = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        label='Which number(s) were you successful in reaching?')
-
     class Meta:
         model = LogEntry
         fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        choices = self.custom_choices
-        # self.fields['phone_num_type'].choices = choices
-        # self.fields['phone_num_success'].choices = choices + (('none_of_the_above', 'None of the above'),)
