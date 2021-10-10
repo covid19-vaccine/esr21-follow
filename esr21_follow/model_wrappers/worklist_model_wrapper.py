@@ -29,8 +29,6 @@ class WorkListModelWrapper(ModelWrapper):
                 return locator
         return None
 
-
-
     @property
     def call_datetime(self):
         return self.object.called_datetime
@@ -74,7 +72,7 @@ class WorkListModelWrapper(ModelWrapper):
             'subject_phone_alt',
             'subject_work_phone',
             'indirect_contact_cell',
-            'indirect_contact_phone',]
+            'indirect_contact_phone', ]
         if self.subject_locator:
             phone_choices = ()
             for field_attr in field_attrs:

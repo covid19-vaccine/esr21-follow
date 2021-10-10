@@ -43,7 +43,6 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
     def get_success_url(self):
         return reverse('esr21_follow:esr21_follow_listboard_url')
 
-
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -67,8 +66,7 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
         if identifiers:
             identifiers = identifiers.split(',')
             self.create_worklist(identifiers=identifiers)
-        
-        
+
         context.update(
             total_results=self.get_queryset().count(),
             called_subject=WorkList.objects.filter(is_called=True).count(),
@@ -99,4 +97,3 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
                         date_assigned=get_utcnow().date(),
                         visit_code=visit_code,
                         appt_datetime=appointment.appt_datetime)
-

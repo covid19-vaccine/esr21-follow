@@ -137,7 +137,7 @@ class LogAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 @admin.register(LogEntry, site=esr21_follow_admin)
 class LogEntryAdmin(ModelAdminMixin, ModelAdminLogEntryMixin, admin.ModelAdmin):
-    
+
     fields = (
         'log',
         'subject_identifier',
@@ -156,12 +156,8 @@ class LogEntryAdmin(ModelAdminMixin, ModelAdminLogEntryMixin, admin.ModelAdmin):
         'may_call',
     )
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "log":
-            Log = django_apps.get_model(
-                'esr21_follow', 'log')
-            kwargs["queryset"] = Log.objects.filter(
-                id__exact=request.GET.get('log'))
-        return super().formfield_for_foreignkey(
-            db_field, request, **kwargs)
-
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['log'].queryset = \
+            Log.objects.filter(id=request.GET.get('log'))
+        return super(LogEntryAdmin, self).render_change_form(
+            request, context, *args, **kwargs)
