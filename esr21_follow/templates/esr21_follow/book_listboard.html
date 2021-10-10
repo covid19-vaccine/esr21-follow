@@ -46,6 +46,7 @@
 				      <th scope="col">Total booked</th>
 				      <th scope="col">Done</th>
 				      <th scope="col">Pending</th>
+				      <th scope="col">Cancelled</th>
 				    </tr>
 				  </thead>
 				  <tbody>
@@ -55,6 +56,7 @@
 				      <td>{{ booked_today }}</td>
 				      <td>{{ booked_today_done }}</td>
 				      <td>{{ booked_today_pending }}</td>
+				      <td>{{ booked_today_cancelled }}</td>
 				    </tr>
 				    <tr>
 				      <th scope="row">2</th>
@@ -62,6 +64,15 @@
 				      <td>{{ booked_tomorrow }}</td>
 				      <td>{{ booked_tomorrow_done }}</td>
 				      <td>{{ booked_tomorrow_pending }}</td>
+				      <td>{{ booked_tomorrow_cancelled }}</td>
+				    </tr>
+				    <tr>
+				      <th scope="row">2</th>
+				      <td>This Week</td>
+				      <td>{{ booked_this_week }}</td>
+				      <td>{{ booked_this_week_done }}</td>
+				      <td>{{ booked_this_week_pending }}</td>
+				      <td>{{ booked_this_week_cancelled }}</td>
 				    </tr>
 				  </tbody>
 				</table>

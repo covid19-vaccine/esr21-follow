@@ -1,4 +1,6 @@
+from datetime import timedelta
 from dateutil.parser import parse
+import datetime
 import re
 
 from django.contrib.auth.decorators import login_required
@@ -37,7 +39,7 @@ class BookListboardView(NavbarViewMixin, EdcBaseViewMixin,
     navbar_name = 'esr21_follow'
     navbar_selected_item = 'book'
     ordering = '-modified'
-    paginate_by = 6
+    paginate_by = 10
     search_form_url = 'esr21_follow_book_listboard_url'
 
     def get_success_url(self):
@@ -132,14 +134,37 @@ class BookListboardView(NavbarViewMixin, EdcBaseViewMixin,
         booked_today_pending = Booking.objects.filter(
             booking_date=get_utcnow().date(),
             appt_status='pending').count()
-
-        booked_tomorrow = Booking.objects.filter(booking_date=get_utcnow().date()).count()
-        booked_tomorrow_done = Booking.objects.filter(
+        booked_today_cancelled = Booking.objects.filter(
             booking_date=get_utcnow().date(),
+            appt_status='cancelled').count()
+
+        booked_tomorrow = Booking.objects.filter(
+            booking_date=get_utcnow().date() + timedelta(days=1)).count()
+        booked_tomorrow_done = Booking.objects.filter(
+            booking_date=get_utcnow().date() + timedelta(days=1),
             appt_status='done').count()
         booked_tomorrow_pending = Booking.objects.filter(
-            booking_date=get_utcnow().date(),
+            booking_date=get_utcnow().date() + timedelta(days=1),
             appt_status='pending').count()
+        booked_tomorrow_cancelled = Booking.objects.filter(
+            booking_date=get_utcnow().date() + timedelta(days=1),
+            appt_status='cancelled').count()
+
+        date = get_utcnow().date()
+        start_week = date - datetime.timedelta(date.weekday())
+        end_week = start_week + datetime.timedelta(6)
+        
+        booked_this_week = Booking.objects.filter(
+            booking_date__range=[start_week, end_week],).count()
+        booked_this_week_done = Booking.objects.filter(
+            booking_date__range=[start_week, end_week],
+            appt_status='done').count()
+        booked_this_week_pending = Booking.objects.filter(
+            booking_date__range=[start_week, end_week],
+            appt_status='pending').count()
+        booked_this_week_cancelled = Booking.objects.filter(
+            booking_date__range=[start_week, end_week],
+            appt_status='cancelled').count()
             
         done = Booking.objects.filter(
             appt_status='done').count()
@@ -151,15 +176,21 @@ class BookListboardView(NavbarViewMixin, EdcBaseViewMixin,
 
         context = super().get_context_data(**kwargs)
         context.update(
+            booked_this_week=booked_this_week,
+            booked_this_week_done=booked_this_week_done,
+            booked_this_week_pending=booked_this_week_pending,
+            booked_this_week_cancelled=booked_this_week_cancelled,
             total_bookings=total_bookings,
             done=done,
             pending=pending,
             cancelled=cancelled,
             booked_today=booked_today,
+            booked_today_cancelled=booked_today_cancelled,
             booked_tomorrow=booked_tomorrow,
             booked_today_done=booked_today_done,
             booked_today_pending=booked_today_pending,
             booked_tomorrow_done=booked_tomorrow_done,
+            booked_tomorrow_cancelled=booked_tomorrow_cancelled,
             booked_tomorrow_pending=booked_tomorrow_pending)
         return context
 
