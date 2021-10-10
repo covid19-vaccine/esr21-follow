@@ -24,11 +24,11 @@ esr21_follow.append_item(
 
 esr21_follow.append_item(
     NavbarItem(
-        name='bookings',
-        title='bookings',
+        name='book',
+        title='book',
         label='Screening Bookings',
         fa_icon='fa-user-plus',
         url_name=settings.DASHBOARD_URL_NAMES[
-            'esr21_follow_booking_listboard_url']))
+            'esr21_follow_book_listboard_url']))
 
 site_navbars.register(esr21_follow)
