@@ -2,9 +2,10 @@ from django.db import models
 
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.utils import get_utcnow
-
 from edc_call_manager.model_mixins import (
     CallModelMixin, LogModelMixin, LogEntryModelMixin)
+
+from ..choices import CONTACT_FAIL_REASON, CALL_STATUS
 
 
 class Call(CallModelMixin, BaseUuidModel):
@@ -33,6 +34,18 @@ class Log(LogModelMixin, BaseUuidModel):
 class LogEntry(LogEntryModelMixin, BaseUuidModel):
 
     log = models.ForeignKey(Log, on_delete=models.PROTECT)
+
+    call_status = models.CharField(
+        max_length=50,
+        choices=CALL_STATUS,
+        default='successful')
+
+    reason_unsuccesful = models.CharField(
+        verbose_name='Reasons call unsuccessful?',
+        max_length=150,
+        choices=CONTACT_FAIL_REASON,
+        null=True,
+        blank=True)
 
     subject_identifier = models.CharField(
         verbose_name="Subject Identifier",

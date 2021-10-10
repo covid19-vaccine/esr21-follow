@@ -81,13 +81,7 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
         for obj in queryset:
             data.append(
                 {'subject_identifier': getattr(obj, 'subject_identifier'),
-                 # 'first_name': getattr(obj, 'first_name'),
-                 # 'last_name': getattr(obj, 'last_name'),
-                 # 'gender': getattr(obj, 'gender'),
                 'visit_code': getattr(obj, 'visit_code'),
-                 'earliest_date_due': getattr(obj, 'earliest_date_due'),
-                 'latest_date_due': getattr(obj, 'latest_date_due'),
-                 'ideal_date_due': getattr(obj, 'ideal_date_due'),
                  'appt_datetime': getattr(obj, 'appt_datetime')})
         df = pd.DataFrame(data)
         self.download_data(

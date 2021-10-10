@@ -23,13 +23,13 @@ from django.core.exceptions import ValidationError
 from edc_base.utils import get_utcnow
 
 
-class BookingListboardView(NavbarViewMixin, EdcBaseViewMixin,
+class BookListboardView(NavbarViewMixin, EdcBaseViewMixin,
                                ListboardFilterViewMixin, SearchFormViewMixin,
                                ListboardView, FormView):
 
     form_class = AppointmentRegistrationForm
-    listboard_template = 'esr21_follow_booking_listboard_template'
-    listboard_url = 'esr21_follow_booking_listboard_url'
+    listboard_template = 'esr21_follow_book_listboard_template'
+    listboard_url = 'esr21_follow_book_listboard_url'
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
 
@@ -37,13 +37,13 @@ class BookingListboardView(NavbarViewMixin, EdcBaseViewMixin,
     listboard_view_filters = ScreeningListboardViewFilters()
     model_wrapper_cls = BookingModelWrapper
     navbar_name = 'esr21_follow'
-    navbar_selected_item = 'bookings'
+    navbar_selected_item = 'book'
     ordering = '-modified'
-    paginate_by = 6
-    search_form_url = 'esr21_follow_booking_listboard_url'
+    paginate_by = 10
+    search_form_url = 'esr21_follow_book_listboard_url'
 
     def get_success_url(self):
-        return reverse('esr21_follow:esr21_follow_booking_listboard_url')
+        return reverse('esr21_follow:esr21_follow_book_listboard_url')
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -138,12 +138,13 @@ class BookingListboardView(NavbarViewMixin, EdcBaseViewMixin,
             booking_date=get_utcnow().date(),
             appt_status='cancelled').count()
 
-        booked_tomorrow = Booking.objects.filter(booking_date=get_utcnow().date()).count()
+        booked_tomorrow = Booking.objects.filter(
+            booking_date=get_utcnow().date() + timedelta(days=1)).count()
         booked_tomorrow_done = Booking.objects.filter(
-            booking_date=get_utcnow().date(),
+            booking_date=get_utcnow().date() + timedelta(days=1),
             appt_status='done').count()
         booked_tomorrow_pending = Booking.objects.filter(
-            booking_date=get_utcnow().date(),
+            booking_date=get_utcnow().date() + timedelta(days=1),
             appt_status='pending').count()
         booked_tomorrow_cancelled = Booking.objects.filter(
             booking_date=get_utcnow().date() + timedelta(days=1),
@@ -189,8 +190,8 @@ class BookingListboardView(NavbarViewMixin, EdcBaseViewMixin,
             booked_today_done=booked_today_done,
             booked_today_pending=booked_today_pending,
             booked_tomorrow_done=booked_tomorrow_done,
-            booked_tomorrow_pending=booked_tomorrow_pending,
-            booked_tomorrow_cancelled=booked_tomorrow_cancelled,)
+            booked_tomorrow_cancelled=booked_tomorrow_cancelled,
+            booked_tomorrow_pending=booked_tomorrow_pending)
         return context
 
     def get_queryset(self):

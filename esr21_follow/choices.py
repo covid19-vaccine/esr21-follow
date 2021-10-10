@@ -31,6 +31,11 @@ APPT_REASONS_UNWILLING = (
     (OTHER, 'Other reason ...'),
 )
 
+CALL_STATUS = (
+    ('successful', 'Successful'),
+    ('unsuccessful', 'Unsuccessful'),
+)
+
 CALL_OUTCOME = (
     ('missed_visit', 'Patient missed the visit'),
     ('successful_visit', 'Patient managed to go for their visit'))

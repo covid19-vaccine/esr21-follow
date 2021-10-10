@@ -156,6 +156,7 @@ DEVICE_ROLE = 'CentralServer'
 
 DASHBOARD_URL_NAMES = {
     'esr21_follow_listboard_url': 'esr21_follow:esr21_follow_listboard_url',
+    'esr21_follow_book_listboard_url': 'esr21_follow:esr21_follow_book_listboard_url'
 
 }
 
