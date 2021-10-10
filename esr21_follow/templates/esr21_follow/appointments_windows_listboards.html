@@ -1,0 +1,190 @@
+{% extends "edc_dashboard/listboard.html" %}
+{% load admin_urls %}
+{% load edc_base_extras %}
+{% load crispy_forms_tags %}
+{% load esr21_dashboard_extras %}
+{% load follow_extras %}
+
+{% block extra-scripts %}
+	{{ block.super }}
+	<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+	<script type="text/javascript">
+	$(document).ready(function() {
+	    $('#item-identifiers').DataTable();
+	} );
+	</script>
+
+	<script type="text/javascript">
+
+	  jQuery(function() {
+	    jQuery('#users').change(function() {
+	        this.form.submit();
+	    });
+	});
+
+	 function getCheckedCheckboxesFor(checkboxName) {
+	    var checkboxes = document.querySelectorAll('input[name="' + checkboxName + '"]:checked'), values = [];
+	    Array.prototype.forEach.call(checkboxes, function(el) {
+	        values.push(el.value);
+	    });
+	    window.location = "{% url 'esr21_follow:esr21_follow_listboard_url' %}?identifiers=" + values;
+	}
+	</script>
+{% endblock extra-scripts %}
+{% block extra_content%}
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+      <div class="panel-body">
+       <!-- begin panel_action_buttons -->
+        <span class="glyphicon glyphicon-ok-sign"></span> Done <span class="badge">{{done}}</span> / <span class="badge">{{total_bookings}}</span>
+        <span class="glyphicon glyphicon-adjust"></span> Pending <span class="badge">{{pending}}</span> / <span class="badge">{{total_bookings}}</span>
+        <span class="glyphicon glyphicon-remove"></span> Cancelled <span class="badge">{{cancelled}}</span> / <span class="badge">{{total_bookings}}</span>
+        &nbsp;&nbsp;
+        <hr>
+       <!-- end panel_action_buttons -->  
+	       		<table class="table table-hover">
+				  <thead>
+				    <tr>
+				      <th scope="col">#</th>
+				      <th scope="col">Scheduled Appointments</th>
+				      <th scope="col">Total booked</th>
+				      <th scope="col">Done</th>
+				      <th scope="col">Pending</th>
+				      <th scope="col">In Complete</th>
+				      <th scope="col">In Progress</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr>
+				      <th scope="row">1</th>
+				      <td>Today</td>
+				      <td>{{ booked_today }}</td>
+				      <td>{{ booked_today_done }}</td>
+				      <td>{{ booked_today_pending }}</td>
+				      <td>{{ booked_today_incomplete }}</td>
+				      <td>{{ booked_today_inprogress }}</td>
+				    </tr>
+				    <tr>
+				      <th scope="row">2</th>
+				      <td>Tomorrow</td>
+				      <td>{{ booked_tomorrow }}</td>
+				      <td>{{ booked_tomorrow_done }}</td>
+				      <td>{{ booked_tomorrow_pending }}</td>
+				      <td>{{ booked_tomorrow_incomplete }}</td>
+				      <td>{{ booked_tomorrow_inprogress }}</td>
+				    </tr>
+				    <tr>
+				      <th scope="row">2</th>
+				      <td>This Week</td>
+				      <td>{{ booked_this_week }}</td>
+				      <td>{{ booked_this_week_done }}</td>
+				      <td>{{ booked_this_week_pending }}</td>
+				      <td>{{ booked_this_week_incomplete }}</td>
+				      <td>{{ booked_this_week_inprogress }}</td>
+				    </tr>
+				  </tbody>
+				</table>
+      </div>
+  </div>
+</div>
+{% endblock extra_content %}
+{% block listboard_panel %}
+{% if results %}
+	<!-- Trigger the modal with a button -->
+	  <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal">show downloads</button>
+	
+	  <!-- Modal -->
+	  <div class="modal fade" id="myModal" role="dialog">
+	    <div class="modal-dialog">
+	    
+	      <!-- Modal content-->
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title">Appointment schedule windows downloads</h4>
+	        </div>
+	        <div class="modal-body">
+	          {% if appointment_downloads %}
+				<table id="item-identifiers" class="table table-striped table-bordered" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>Export identifier</th>
+							<th>Document</th>
+							<th>Datetime generated</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<th>Export identifier</th>
+							<th>Document</th>
+							<th>Datetime generated</th>
+						</tr>
+					</tfoot>
+					<tbody>
+						{% for download in appointment_downloads %}
+						<tr>
+					 		<td>{{ download.export_identifier }}</td>
+					 		<td>
+					 			{% if download.document.url %}
+					 				<a href={{ download.file_url }}><i class="fa fa-download fa-sm"></i> file download</a>
+					 			{% endif %}
+					 		</td>
+					 		<td>{{ download.uploaded_at }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			{% else%}
+				<p>No generated downloads</p>
+			{% endif %}
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+	      </div>
+	      
+	    </div>
+	  </div>
+	
+	|
+	<a href="{% url 'esr21_follow:esr21_follow_appt_listboard_url' %}?export=yes" class="btn btn-sm btn-info">Export</a>
+	<input type="button" class="btn btn-sm btn-info" onclick="getCheckedCheckboxesFor('participant')" value="Create Worklist" />
+	<span class="pull-right">{% csrf_token %}{% crispy form %}</span>
+	
+	&nbsp;&nbsp;
+ {% endif %}
+{% endblock listboard_panel %}
+{% block listboard_table_header %}
+    <!-- begin results header -->
+    <th>#</th>
+    <th>Call</th>
+    <th>Subject</th>
+    <th>Appt Status</th>
+	<th>Visit Code</th>
+	<th>SCHEDULED DATE</th>
+    <!-- end results header -->
+{% endblock listboard_table_header %}
+
+{% block listboard_table_button_column %}
+	<td>
+		<input name="participant" type="checkbox" value="{{ result.subject_identifier }}|{{result.visit_code}}"/>
+	</td>
+    <td>
+    {% dashboard_button result %}
+    {% if result.gender == 'M' %}
+        <i class="fa fa-male fa-lg"></i>
+    {% else %}
+        <i class="fa fa-female fa-lg"></i>
+    {% endif %}
+    {{ result.subject_identifier }}
+	</td>
+{% endblock listboard_table_button_column %}
+
+{% block listboard_table_columns %}
+	<td>{{ result.appt_status }}</td>
+    <td>{{ result.visit_code  }}</td>
+    <td>{{result.object.appt_datetime}}</td>
+{% endblock listboard_table_columns %}

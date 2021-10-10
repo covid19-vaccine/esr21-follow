@@ -1,0 +1,123 @@
+{% extends 'edc_base/base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% load follow_extras %}
+{% block extra-scripts %}
+    {{ block.super }}
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'esr21_follow/css/card.css' %}">
+{% endblock extra-scripts %}
+{% block extra-styles %}
+    {{ block.super }}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+    body{
+    margin-top:20px;
+    background:#FAFAFA;
+}
+.order-card {
+    color: #fff;
+}
+
+.bg-c-blue {
+    background: linear-gradient(45deg,#4099ff,#73b4ff);
+}
+
+.bg-c-green {
+    background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+}
+
+.bg-c-yellow {
+    background: linear-gradient(45deg,#FFB64D,#ffcb80);
+}
+
+.bg-c-pink {
+    background: linear-gradient(45deg,#FF5370,#ff869a);
+}
+
+
+.card {
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+    box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+    border: none;
+    margin-bottom: 30px;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.card .card-block {
+    padding: 25px;
+}
+
+.order-card i {
+    font-size: 26px;
+}
+
+.f-left {
+    float: left;
+}
+
+.f-right {
+    float: right;
+}
+    </style>
+{% endblock extra-styles %}
+
+
+{% block main %}
+<div class="container">
+    <h2>Screening bookings</h2>
+    <br>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-body">
+                <b>Fill form & book:</b> <span class="pull-right">{% csrf_token %}{% crispy form %}</span>
+            </div>
+        </div>
+      </div>
+      <div class="row">
+          {% for booking in bookings %}
+            <div class="col-md-4 col-xl-3">
+                <div {% if booking.appt_status == 'done' %}class="card bg-c-green order-card" {% elif booking.appt_status == 'pending' %}class="card bg-c-yellow order-card" {% elif booking.appt_status == 'cancelled' %}class="card bg-c-pink order-card" {% else %}class="card bg-c-blue order-card"{%endif%}>
+                    <div class="card-block">
+                    <a id="booking_change_{{ subject_cell }}" title="{{ title }}" role="button" 
+					   class="btn btn-default btn-sm"
+					       href="{{ booking.href }}">
+					    <i class="fa fa-pencil-alt fa-sm"></i>
+					</a> <b>Status:</b> {{booking.appt_status}}
+                        <h4 class="m-b-20"><b>{{booking.first_name}} {{booking.last_name}}</b></h4>
+                        <p class="m-b-0"><b>Contact #: {{booking.subject_cell}}</b></p>
+                        <p class="m-b-0"><b>Date: {{booking.booking_date}}</b></p>
+                        <p class="m-b-0"><b>Date: {{booking.appt_status}}</b></p>
+                        <br>
+                        <a class="btn btn-success" href="#" role="button">Done</a>
+                        <span class="f-right"><a class="btn btn-danger" href="#" role="button">Cancel</a></span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}        
+        
+    </div>
+    <div class="pagination">
+	    <span class="step-links">
+	        {% if page_obj.has_previous %}
+	            <a href="?page=1">&laquo; first</a>
+	            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+	        {% endif %}
+	
+	        <span class="current">
+	            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+	        </span>
+	
+	        {% if page_obj.has_next %}
+	            <a href="?page={{ page_obj.next_page_number }}">next</a>
+	            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+	        {% endif %}
+	    </span>
+	</div>
+</div>
+{% endblock main %}
