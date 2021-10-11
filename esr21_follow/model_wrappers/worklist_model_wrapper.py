@@ -93,7 +93,9 @@ class WorkListModelWrapper(ModelWrapper):
     def log_entry(self):
         log = Log.objects.get(id=self.call_log)
 
-        logentry = LogEntry(log=log)
+        logentry = LogEntry(
+            log=log,
+            subject_identifier=self.subject_identifier)
         return LogEntryModelWrapper(logentry)
 
     @property

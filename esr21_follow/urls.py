@@ -3,7 +3,7 @@ from django.views.generic.base import RedirectView
 from edc_dashboard import UrlConfig
 from .admin_site import esr21_follow_admin
 from .views import (
-    AppointmentListboardView, BookListboardView, 
+    AppointmentListboardView, BookListboardView,
     BookingListboardView, ListboardView)
 
 app_name = 'esr21_follow'

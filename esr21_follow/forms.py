@@ -79,8 +79,12 @@ class AppointmentRegistrationForm(forms.Form):
             Submit('submit', u'Book participant', css_class="btn btn-sm btn-default")
         )
 
-class LogEntryForm(
-        SiteModelFormMixin, forms.ModelForm):
+
+class LogEntryForm(SiteModelFormMixin, forms.ModelForm):
+
+    subject_identifier = forms.CharField(
+        label='Subject Identifier',
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
     class Meta:
         model = LogEntry

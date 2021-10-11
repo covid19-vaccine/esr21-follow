@@ -144,16 +144,11 @@ class LogEntryAdmin(ModelAdminMixin, ModelAdminLogEntryMixin, admin.ModelAdmin):
         'call_reason',
         'call_datetime',
         'contact_type',
-        'time_of_week',
-        'time_of_day',
-        'appt',
-        'appt_reason_unwilling',
-        'appt_reason_unwilling_other',
         'appt_date',
-        'appt_grading',
         'appt_location',
         'appt_location_other',
-        'may_call',
+        'call_status',
+        'reason_unsuccesful'
     )
 
     def render_change_form(self, request, context, *args, **kwargs):
