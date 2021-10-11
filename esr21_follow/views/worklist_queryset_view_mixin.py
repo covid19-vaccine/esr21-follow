@@ -21,6 +21,7 @@ class WorkListQuerysetViewMixin:
 
     def get_queryset_filter_options(self, request, *args, **kwargs):
         options = super().get_queryset_filter_options(request, *args, **kwargs)
-        options = self.add_username_filter_options(
-            options=options, **kwargs)
+        if not request.user.groups.filter(name='follow_ups_supervisor').exists():
+            options = self.add_username_filter_options(
+                options=options, **kwargs)
         return options
