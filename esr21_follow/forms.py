@@ -3,7 +3,9 @@ from crispy_forms.layout import Layout, Submit
 from django import forms
 
 from edc_base.sites import SiteModelFormMixin
+from edc_form_validators import FormValidatorMixin
 
+from .form_validations import LogEntryFormValidator
 from .models import Booking, WorkList, LogEntry
 
 
@@ -12,6 +14,7 @@ class WorkListForm(SiteModelFormMixin, forms.ModelForm):
     class Meta:
         model = WorkList
         fields = '__all__'
+
 
 class BookingForm(SiteModelFormMixin, forms.ModelForm):
 
@@ -80,7 +83,9 @@ class AppointmentRegistrationForm(forms.Form):
         )
 
 
-class LogEntryForm(SiteModelFormMixin, forms.ModelForm):
+class LogEntryForm(SiteModelFormMixin, FormValidatorMixin, forms.ModelForm):
+
+    form_validator_cls = LogEntryFormValidator
 
     subject_identifier = forms.CharField(
         label='Subject Identifier',

@@ -1,13 +1,7 @@
-from django.apps import apps as django_apps
 from django.contrib import admin
-from django.conf import settings
 
 from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
-from django.urls.base import reverse
-from django.urls.exceptions import NoReverseMatch
 
-
-from edc_model_admin.model_admin_next_url_redirect_mixin import ModelAdminNextUrlRedirectError
 from edc_base.sites.admin import ModelAdminSiteMixin
 from edc_model_admin import (
     ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
@@ -20,10 +14,9 @@ from edc_model_admin.changelist_buttons import ModelAdminChangelistModelButtonMi
 from edc_call_manager.admin import ModelAdminLogEntryMixin
 
 from .admin_site import esr21_follow_admin
-from .forms import BookingForm, WorkListForm, LogEntryForm
+from .forms import BookingForm, WorkListForm
 
-from .models import (
-    Booking, Call, WorkList, Log, LogEntry)
+from .models import Booking, Call, WorkList, Log, LogEntry
 
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,
@@ -136,7 +129,7 @@ class LogAdmin(ModelAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(LogEntry, site=esr21_follow_admin)
-class LogEntryAdmin(ModelAdminMixin, ModelAdminLogEntryMixin, admin.ModelAdmin):
+class LogEntryAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     fields = (
         'log',
@@ -151,8 +144,26 @@ class LogEntryAdmin(ModelAdminMixin, ModelAdminLogEntryMixin, admin.ModelAdmin):
         'reason_unsuccesful'
     )
 
+    radio_fields = {'call_reason': admin.VERTICAL,
+                    'contact_type': admin.VERTICAL,
+                    'appt_location': admin.VERTICAL,
+                    'call_status': admin.VERTICAL,
+                    'reason_unsuccesful': admin.VERTICAL}
+
+    list_display = ('log', 'call_datetime', 'appt_date', )
+
+    search_fields = ('id', 'log__call__subject_identifier')
+
+    list_filter = (
+        'call_datetime',
+        'appt_date',
+        'created',
+        'modified',
+        'hostname_created',
+        'hostname_modified',
+    )
+
     def render_change_form(self, request, context, *args, **kwargs):
         context['adminform'].form.fields['log'].queryset = \
             Log.objects.filter(id=request.GET.get('log'))
-        return super(LogEntryAdmin, self).render_change_form(
-            request, context, *args, **kwargs)
+        return super().render_change_form(request, context, *args, **kwargs)

@@ -20,14 +20,15 @@ from edc_navbar import NavbarViewMixin
 from edc_appointment.models import Appointment
 from edc_appointment.constants import IN_PROGRESS_APPT, INCOMPLETE_APPT, COMPLETE_APPT
 from edc_appointment.constants import  NEW_APPT
+from edc_base.utils import get_utcnow
 
 from ..model_wrappers import FollowAppointmentModelWrapper
-from ..models import FollowExportFile
+from ..models import FollowExportFile, WorkList
 from ..forms import AppointmentsWindowForm
 from .download_report_mixin import DownloadReportMixin
 from .filters import ListboardViewFilters
 from .appointment_queryset_view_mixin import AppointmentQuerysetViewMixin
-from edc_base.utils import get_utcnow
+
 
 
 class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
@@ -107,12 +108,17 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
                     f"?start_date={start_date}&end_date={end_date}")
 
     def get_context_data(self, **kwargs):
-        self.object_list = self.get_queryset()
+        
         context = super().get_context_data(**kwargs)
-        object_list = context.get('object_list')
+        exclude_apps = []
+        for obj in WorkList.objects.filter(assigned__isnull=False):
+            for q_obj in context.get('results'):
+                if q_obj.subject_identifier == obj.subject_identifier and q_obj.visit_code == obj.visit_code:
+                    exclude_apps.append(q_obj.id)
+        results = self.get_queryset().exclude(id__in=exclude_apps)
+        results = self.get_wrapped_queryset(results)
         if self.request.GET.get('export') == 'yes':
-            queryset = context.get('object_list')  # from ListView
-            self.export(queryset=queryset)
+            self.export(queryset=results)
             msg = (f'File generated successfully.  Go to the download list to download file.')
             messages.add_message(
                 self.request, messages.SUCCESS, msg)
@@ -134,7 +140,7 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
             if appt_filter_form.is_valid():
                 start_date = appt_filter_form.data['start_date']
                 end_date = appt_filter_form.data['end_date']
-                queryset = self.get_queryset()
+                queryset = results
                 object_list = queryset.filter(
                     appt_datetime__date__gte=start_date,
                     appt_datetime__date__lte=end_date)
@@ -195,6 +201,7 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
             appt_status=IN_PROGRESS_APPT).count()
 
         context.update(
+            results=results,
             appointment_downloads=appointment_downloads,
             booked_today=booked_today,
             booked_today_done=booked_today_done,
