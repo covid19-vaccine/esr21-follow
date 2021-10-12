@@ -53,6 +53,11 @@ class LogEntry(LogEntryModelMixin, BaseUuidModel):
         null=True,
         blank=True)
 
+    comment = models.TextField(
+        verbose_name='Comments',
+        null=True,
+        blank=True)
+
     class Meta(LogEntryModelMixin.Meta):
         app_label = 'esr21_follow'
 

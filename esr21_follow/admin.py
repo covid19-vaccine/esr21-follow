@@ -11,7 +11,6 @@ from edc_model_admin import (
 from edc_model_admin import audit_fieldset_tuple
 from edc_model_admin import ModelAdminBasicMixin
 from edc_model_admin.changelist_buttons import ModelAdminChangelistModelButtonMixin
-from edc_call_manager.admin import ModelAdminLogEntryMixin
 
 from .admin_site import esr21_follow_admin
 from .forms import BookingForm, WorkListForm
@@ -141,7 +140,8 @@ class LogEntryAdmin(ModelAdminMixin, admin.ModelAdmin):
         'appt_location',
         'appt_location_other',
         'call_status',
-        'reason_unsuccesful'
+        'reason_unsuccesful',
+        'comment'
     )
 
     radio_fields = {'call_reason': admin.VERTICAL,
