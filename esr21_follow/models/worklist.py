@@ -1,5 +1,7 @@
 from django.db import models
+from django.db.models.fields import UUIDField
 
+from edc_appointment.models import Appointment
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators.date import datetime_not_future, date_not_future
 from edc_base.sites.site_model_mixin import SiteModelMixin
@@ -26,6 +28,10 @@ class WorkList(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         max_length=50,
         null=True,
         blank=True)
+
+    appointment_id = UUIDField(
+        blank=True,
+        editable=False)
 
     report_datetime = models.DateTimeField(
         verbose_name="Report date ad time",

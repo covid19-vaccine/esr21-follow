@@ -110,12 +110,10 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
     def get_context_data(self, **kwargs):
         
         context = super().get_context_data(**kwargs)
-        exclude_apps = []
-        for obj in WorkList.objects.filter(assigned__isnull=False):
-            for q_obj in context.get('results'):
-                if q_obj.subject_identifier == obj.subject_identifier and q_obj.visit_code == obj.visit_code:
-                    exclude_apps.append(q_obj.id)
-        results = self.get_queryset().exclude(id__in=exclude_apps)
+        appointment_ids = WorkList.objects.filter(assigned__isnull=False).values_list('appointment_id')
+        appointment_ids = [id[0].hex for id in appointment_ids]
+        appointment_ids = list(set(appointment_ids))
+        results = self.get_queryset().exclude(id__in=appointment_ids)
         results = self.get_wrapped_queryset(results)
         if self.request.GET.get('export') == 'yes':
             self.export(queryset=results)

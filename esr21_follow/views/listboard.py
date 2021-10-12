@@ -92,6 +92,7 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
                 except WorkList.DoesNotExist:
                     WorkList.objects.create(
                         subject_identifier=subject_identifier,
+                        appointment_id=appointment.id,
                         user_created=self.request.user.username,
                         assigned=self.request.user.username,
                         date_assigned=get_utcnow().date(),
