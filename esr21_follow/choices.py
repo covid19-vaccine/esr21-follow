@@ -1,5 +1,8 @@
 from edc_constants.constants import NOT_APPLICABLE, YES, NO, DWTA, OTHER
 
+from edc_appointment.constants import IN_PROGRESS_APPT, INCOMPLETE_APPT, COMPLETE_APPT
+from edc_appointment.constants import CANCELLED_APPT, NEW_APPT
+
 
 APPT_STATUS = (
     ('pending', 'Pending'),
@@ -20,6 +23,14 @@ APPT_LOCATIONS = (
     ('telephone', 'By telephone'),
     ('clinic', 'At clinic'),
     ('OTHER', 'Other location'),
+)
+
+APPT_STATUS_WORKLIST = (
+    (NEW_APPT, 'New'),
+    (IN_PROGRESS_APPT, 'In Progress'),
+    (INCOMPLETE_APPT, 'Incomplete'),
+    (COMPLETE_APPT, 'Done'),
+    (CANCELLED_APPT, 'Cancelled'),
 )
 
 APPT_REASONS_UNWILLING = (

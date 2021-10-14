@@ -65,7 +65,7 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
         identifiers = self.request.GET.get('identifiers', None)
         if identifiers:
             identifiers = identifiers.split(',')
-            self.create_worklist(identifiers=identifiers)
+            self.assign_worklist(identifiers=identifiers)
 
         context.update(
             total_results=self.get_queryset().count(),
@@ -74,27 +74,18 @@ class ListboardView(NavbarViewMixin, EdcBaseViewMixin,
         )
         return context
 
-    def create_worklist(self, identifiers=None):
-        """Create a worklist.
+    def assign_worklist(self, identifiers=None):
+        """Assign a worklist.
         """
         for identifier in identifiers:
             subject_identifier, visit_code = identifier.split('|')
             try:
-                appointment = Appointment.objects.get(
+                work_list = WorkList.objects.get(
                     subject_identifier=subject_identifier, visit_code=visit_code)
-            except Appointment.DoesNotExist:
+            except WorkList.DoesNotExist:
                 raise ValidationError(
-                    f'Missing appointment for visit {visit_code}, {subject_identifier}')
+                    f'{subject_identifier} missing a worklist of an appointment for visit {visit_code}')
             else:
-                try:
-                    WorkList.objects.get(
-                        subject_identifier=identifier, visit_code=visit_code)
-                except WorkList.DoesNotExist:
-                    WorkList.objects.create(
-                        subject_identifier=subject_identifier,
-                        appointment_id=appointment.id,
-                        user_created=self.request.user.username,
-                        assigned=self.request.user.username,
-                        date_assigned=get_utcnow().date(),
-                        visit_code=visit_code,
-                        appt_datetime=appointment.appt_datetime)
+                work_list.assigned = self.request.user.username
+                work_list.date_assigned = get_utcnow().date()
+                work_list.save()

@@ -151,7 +151,7 @@
 	
 	|
 	<a href="{% url 'esr21_follow:esr21_follow_appt_listboard_url' %}?export=yes" class="btn btn-sm btn-info">Export</a>
-	<input type="button" class="btn btn-sm btn-info" onclick="getCheckedCheckboxesFor('participant')" value="Create Worklist" />
+	<input type="button" class="btn btn-sm btn-info" onclick="getCheckedCheckboxesFor('participant')" value="Assign Worklist" />
 	<span class="pull-right">{% csrf_token %}{% crispy form %}</span>
 	
 	&nbsp;&nbsp;

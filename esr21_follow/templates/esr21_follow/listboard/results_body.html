@@ -1,4 +1,5 @@
-
+{% load esr21_dashboard_extras %}
+{% load follow_extras %}
 <!-- begin results body -->
 
 {% for result in results %}
@@ -7,14 +8,8 @@
     <!--  begin columns  -->
     	<td>{{ forloop.counter }}</td>
 		<td>
-        <span class="badge badge-light">
-        	{% if result.gender == 'M' %} <i class="fa fa-male fa-lg"></i>
-        	{% else %} <i class="fa fa-female fa-lg"></i> {% endif %}
-        	{% if result.multiple_births > 1 %} <sup> {{result.multiple_births}}</sup> {% endif %}
-        </span>
+		{% dashboard_button result %}
 	    {{ result.subject_identifier }}
-	    {{ result.first_name }}
-	    {{ result.last_name }}
 		</td>
 		<td>{{ result.visit_code }}</td>
 		<td>{{ result.appt_datetime }}</td>
