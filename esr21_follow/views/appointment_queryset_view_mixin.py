@@ -4,7 +4,6 @@ from django.db.models.constants import LOOKUP_SEP
 class AppointmentQuerysetViewMixin:
 
     appointment_queryset_lookups = []
-    subject_identifier_queryset_lookups = []
 
     @property
     def appointment_lookup_prefix(self):
@@ -13,7 +12,8 @@ class AppointmentQuerysetViewMixin:
 
     def add_appt_status_filter_options(self, options=None, **kwargs):
         options.update(
-            {f'{self.appointment_lookup_prefix}appt_status': 'new'})
+            {f'{self.appointment_lookup_prefix}appt_status': 'new',
+             f'{self.appointment_lookup_prefix}assigned__isnull': True})
         return options
     
 

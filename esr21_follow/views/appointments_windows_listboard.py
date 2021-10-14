@@ -22,7 +22,7 @@ from edc_appointment.constants import IN_PROGRESS_APPT, INCOMPLETE_APPT, COMPLET
 from edc_appointment.constants import  NEW_APPT
 from edc_base.utils import get_utcnow
 
-from ..model_wrappers import FollowAppointmentModelWrapper
+from ..model_wrappers import WorkListModelWrapper
 from ..models import FollowExportFile, WorkList
 from ..forms import AppointmentsWindowForm
 from .download_report_mixin import DownloadReportMixin
@@ -42,9 +42,9 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
 
-    model = 'edc_appointment.appointment'
+    model = 'esr21_follow.worklist'
     listboard_view_filters = ListboardViewFilters()
-    model_wrapper_cls = FollowAppointmentModelWrapper
+    model_wrapper_cls = WorkListModelWrapper
     navbar_name = 'esr21_follow'
     navbar_selected_item = 'appointments'
     ordering = '-modified'
@@ -108,13 +108,9 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
                     f"?start_date={start_date}&end_date={end_date}")
 
     def get_context_data(self, **kwargs):
-        
+        self.object_list = self.get_queryset() 
         context = super().get_context_data(**kwargs)
-        appointment_ids = WorkList.objects.filter(assigned__isnull=False).values_list('appointment_id')
-        appointment_ids = [id[0].hex for id in appointment_ids]
-        appointment_ids = list(set(appointment_ids))
-        results = self.get_queryset().exclude(id__in=appointment_ids)
-        results = self.get_wrapped_queryset(results)
+        results = self.get_queryset() 
         if self.request.GET.get('export') == 'yes':
             self.export(queryset=results)
             msg = (f'File generated successfully.  Go to the download list to download file.')
@@ -138,44 +134,41 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
             if appt_filter_form.is_valid():
                 start_date = appt_filter_form.data['start_date']
                 end_date = appt_filter_form.data['end_date']
-                queryset = results
-                object_list = queryset.filter(
+                results = results.filter(
                     appt_datetime__date__gte=start_date,
                     appt_datetime__date__lte=end_date)
-                wrapped_queryset = self.get_wrapped_queryset(object_list)
-                self.object_list = wrapped_queryset
 
         appointment_downloads = FollowExportFile.objects.filter(
             description='Appointment and windows').order_by('uploaded_at')
             
             
             
-        booked_today = Appointment.objects.filter(appt_datetime__date=get_utcnow().date()).count()
-        booked_today_done = Appointment.objects.filter(
+        booked_today = WorkList.objects.filter(appt_datetime__date=get_utcnow().date()).count()
+        booked_today_done = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date(),
             appt_status=COMPLETE_APPT).count()
-        booked_today_pending = Appointment.objects.filter(
+        booked_today_pending = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date(),
             appt_status=NEW_APPT).count()
-        booked_today_incomplete = Appointment.objects.filter(
+        booked_today_incomplete = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date(),
             appt_status=INCOMPLETE_APPT).count()
-        booked_today_inprogress = Appointment.objects.filter(
+        booked_today_inprogress = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date(),
             appt_status=IN_PROGRESS_APPT).count()
 
-        booked_tomorrow = Appointment.objects.filter(
+        booked_tomorrow = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date() + timedelta(days=1)).count()
-        booked_tomorrow_done = Appointment.objects.filter(
+        booked_tomorrow_done = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date() + timedelta(days=1),
             appt_status=COMPLETE_APPT).count()
-        booked_tomorrow_pending = Appointment.objects.filter(
+        booked_tomorrow_pending = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date() + timedelta(days=1),
             appt_status=NEW_APPT).count()
-        booked_tomorrow_incomplete = Appointment.objects.filter(
+        booked_tomorrow_incomplete = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date() + timedelta(days=1),
             appt_status=INCOMPLETE_APPT).count()
-        booked_tomorrow_inprogress = Appointment.objects.filter(
+        booked_tomorrow_inprogress = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date() + timedelta(days=1),
             appt_status=IN_PROGRESS_APPT).count()
 
@@ -183,18 +176,18 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
         start_week = date - datetime.timedelta(date.weekday())
         end_week = start_week + datetime.timedelta(6)
 
-        booked_this_week = Appointment.objects.filter(
+        booked_this_week = WorkList.objects.filter(
             appt_datetime__date__range=[start_week, end_week]).count()
-        booked_this_week_done = Appointment.objects.filter(
+        booked_this_week_done = WorkList.objects.filter(
             appt_datetime__date__range=[start_week, end_week],
             appt_status=COMPLETE_APPT).count()
-        booked_this_week_pending = Appointment.objects.filter(
+        booked_this_week_pending = WorkList.objects.filter(
             appt_datetime__date__range=[start_week, end_week],
             appt_status=NEW_APPT).count()
-        booked_this_week_incomplete = Appointment.objects.filter(
+        booked_this_week_incomplete = WorkList.objects.filter(
             appt_datetime__date__range=[start_week, end_week],
             appt_status=INCOMPLETE_APPT).count()
-        booked_this_week_inprogress = Appointment.objects.filter(
+        booked_this_week_inprogress = WorkList.objects.filter(
             appt_datetime__date__range=[start_week, end_week],
             appt_status=IN_PROGRESS_APPT).count()
 

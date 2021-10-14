@@ -9,9 +9,9 @@ class AppConfig(DjangoAppConfig):
     extra_assignee_choices = ()
     assignable_users_group = 'assignable users'
 
-    # def ready(self):
-        # from .models import cal_log_entry_on_post_save
-        # from .models import worklist_on_post_save
+    def ready(self):
+        from .models import cal_log_entry_on_post_save
+        from .models import appointment_on_post_save
 
 
 if settings.APP_NAME == 'esr21_follow':
