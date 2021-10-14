@@ -33,7 +33,6 @@ class Booking(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     subject_cell = EncryptedCharField(
        verbose_name='Mobile phone number',
        validators=[CellNumber, ],
-       unique=True,
        blank=True,
        null=True,)
 
@@ -57,7 +56,7 @@ class Booking(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         return f'{self.first_name} {self.last_name}'
 
     def natural_key(self):
-        return (self.subject_cell, )
+        return (self.subject_cell,)
 
     def get_search_slug_fields(self):
         fields = ['subject_cell', 'first_name', 'last_name', 'middle_name']
@@ -69,3 +68,4 @@ class Booking(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     class Meta:
         app_label = 'esr21_follow'
         verbose_name = 'Booking'
+        unique_together = ('first_name', 'last_name', 'subject_cell')
