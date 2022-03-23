@@ -8,6 +8,12 @@ from edc_call_manager.model_mixins import (
 from ..choices import CONTACT_FAIL_REASON, CALL_STATUS
 
 
+class CallManager(models.Manager):
+
+    def get_by_natural_key(self, subject_identifier, visit_code):
+        return self.get(subject_identifier=subject_identifier, visit_code=visit_code)
+
+
 class Call(CallModelMixin, BaseUuidModel):
 
     scheduled = models.DateTimeField(
@@ -17,6 +23,8 @@ class Call(CallModelMixin, BaseUuidModel):
         max_length=25,
         null=True,
         editable=False)
+
+    objects = CallManager()
 
     class Meta(CallModelMixin.Meta):
         app_label = 'esr21_follow'
