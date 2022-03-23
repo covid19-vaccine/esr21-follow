@@ -26,6 +26,9 @@ class Call(CallModelMixin, BaseUuidModel):
 
     objects = CallManager()
 
+    def natural_key(self):
+        return (self.subject_identifier, self.visit_code)
+
     class Meta(CallModelMixin.Meta):
         app_label = 'esr21_follow'
         unique_together = ('subject_identifier', 'visit_code',)
