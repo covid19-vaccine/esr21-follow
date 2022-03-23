@@ -30,7 +30,6 @@ from .filters import ListboardViewFilters
 from .appointment_queryset_view_mixin import AppointmentQuerysetViewMixin
 
 
-
 class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
                                ListboardFilterViewMixin, SearchFormViewMixin,
                                AppointmentQuerysetViewMixin,
@@ -82,7 +81,7 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
         for obj in queryset:
             data.append(
                 {'subject_identifier': getattr(obj, 'subject_identifier'),
-                'visit_code': getattr(obj, 'visit_code'),
+                 'visit_code': getattr(obj, 'visit_code'),
                  'appt_datetime': getattr(obj, 'appt_datetime')})
         df = pd.DataFrame(data)
         self.download_data(
@@ -108,28 +107,28 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
                     f"?start_date={start_date}&end_date={end_date}")
 
     def get_context_data(self, **kwargs):
-        self.object_list = self.get_queryset() 
+        self.object_list = self.get_queryset()
         context = super().get_context_data(**kwargs)
-        results = self.get_queryset() 
+        results = self.get_queryset()
         if self.request.GET.get('export') == 'yes':
             self.export(queryset=results)
             msg = (f'File generated successfully.  Go to the download list to download file.')
             messages.add_message(
                 self.request, messages.SUCCESS, msg)
-        
+
         if self.request.method == 'POST':
             appt_filter_form = AppointmentsWindowForm(self.request.POST)
             start_date = (appt_filter_form['start_date'].value())
             end_date = (appt_filter_form['end_date'].value())
-            
+
             start_date = parse(start_date).date()
             end_date = parse(end_date).date()
-            
+
             update_request = self.request.POST.copy()
-            
+
             update_request.update({'start_date': start_date})
             update_request.update({'end_date': end_date})
-            
+
             appt_filter_form = AppointmentsWindowForm(update_request)
             if appt_filter_form.is_valid():
                 start_date = appt_filter_form.data['start_date']
@@ -140,9 +139,7 @@ class AppointmentListboardView(NavbarViewMixin, EdcBaseViewMixin,
 
         appointment_downloads = FollowExportFile.objects.filter(
             description='Appointment and windows').order_by('uploaded_at')
-            
-            
-            
+
         booked_today = WorkList.objects.filter(appt_datetime__date=get_utcnow().date()).count()
         booked_today_done = WorkList.objects.filter(
             appt_datetime__date=get_utcnow().date(),

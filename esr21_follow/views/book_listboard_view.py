@@ -24,8 +24,8 @@ from edc_base.utils import get_utcnow
 
 
 class BookListboardView(NavbarViewMixin, EdcBaseViewMixin,
-                               ListboardFilterViewMixin, SearchFormViewMixin,
-                               ListboardView, FormView):
+                        ListboardFilterViewMixin, SearchFormViewMixin,
+                        ListboardView, FormView):
 
     form_class = AppointmentRegistrationForm
     listboard_template = 'esr21_follow_book_listboard_template'
@@ -153,7 +153,7 @@ class BookListboardView(NavbarViewMixin, EdcBaseViewMixin,
         date = get_utcnow().date()
         start_week = date - datetime.timedelta(date.weekday())
         end_week = start_week + datetime.timedelta(6)
-        
+
         booked_this_week = Booking.objects.filter(
             booking_date__range=[start_week, end_week],).count()
         booked_this_week_done = Booking.objects.filter(
@@ -165,7 +165,7 @@ class BookListboardView(NavbarViewMixin, EdcBaseViewMixin,
         booked_this_week_cancelled = Booking.objects.filter(
             booking_date__range=[start_week, end_week],
             appt_status='cancelled').count()
-            
+
         done = Booking.objects.filter(
             appt_status='done').count()
         pending = Booking.objects.filter(
