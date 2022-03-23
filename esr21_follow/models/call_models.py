@@ -8,10 +8,11 @@ from edc_call_manager.model_mixins import (
 from ..choices import CONTACT_FAIL_REASON, CALL_STATUS
 
 
-class CallManager(models.Manager):
+class ESRCallManager(models.Manager):
 
     def get_by_natural_key(self, subject_identifier, visit_code):
-        return self.get(subject_identifier=subject_identifier, visit_code=visit_code)
+        return self.get(subject_identifier=subject_identifier,
+                        visit_code=visit_code)
 
 
 class Call(CallModelMixin, BaseUuidModel):
@@ -24,7 +25,7 @@ class Call(CallModelMixin, BaseUuidModel):
         null=True,
         editable=False)
 
-    objects = CallManager()
+    objects = ESRCallManager()
 
     def natural_key(self):
         return (self.subject_identifier, self.visit_code)
@@ -37,6 +38,10 @@ class Call(CallModelMixin, BaseUuidModel):
 class Log(LogModelMixin, BaseUuidModel):
 
     call = models.ForeignKey(Call, on_delete=models.PROTECT)
+
+    def natural_key(self):
+        return (self.log_datetime, self.call.subject_identifier, self.call.label,
+                self.call.scheduled)
 
     class Meta(LogModelMixin.Meta):
         app_label = 'esr21_follow'

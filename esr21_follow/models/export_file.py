@@ -46,6 +46,8 @@ class FollowExportFile(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         null=True,
         blank=True)
 
+    objects = ExportFileManager()
+
     def __str__(self):
         return f'{self.export_identifier}'
 

@@ -1,8 +1,8 @@
 from django.test.testcases import TestCase
 
-from edc_call_manager.models import Call
-from ..models import WorkList
+from edc_base.utils import get_utcnow
 
+from ..models import WorkList, Call
 
 
 class TestCallManager(TestCase):
@@ -13,5 +13,7 @@ class TestCallManager(TestCase):
     def test_create_worklist_model(self):
         """Test if a start model created a call instance.
         """
-        WorkList.objects.create(subject_identifier='035-123456')
-        self.assertEqual(Call.objects.filter(subject_identifier='035-123456').count(), 1)  
+        WorkList.objects.create(appt_datetime=get_utcnow(),
+                                subject_identifier='035-123456')
+        self.assertEqual(
+            Call.objects.filter(subject_identifier='035-123456').count(), 1)

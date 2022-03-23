@@ -4,7 +4,7 @@ from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators.date import datetime_not_future, date_not_future
 from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_search.model_mixins import SearchSlugModelMixin, SearchSlugManager
-from edc_appointment.constants import  NEW_APPT
+from edc_appointment.constants import NEW_APPT
 
 from ..choices import APPT_STATUS_WORKLIST
 

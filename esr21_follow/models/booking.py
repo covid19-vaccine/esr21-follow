@@ -10,7 +10,9 @@ from ..choices import APPT_STATUS
 
 
 class BookingManager(SearchSlugManager, models.Manager):
-    pass
+
+    def get_by_natural_key(self, subject_cell, first_name, last_name):
+        return self.get(subject_cell=subject_cell, first_name=first_name, last_name=last_name)
 
 
 class Booking(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
@@ -56,7 +58,7 @@ class Booking(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         return f'{self.first_name} {self.last_name}'
 
     def natural_key(self):
-        return (self.subject_cell,)
+        return (self.subject_cell, self.first_name, self.last_name)
 
     def get_search_slug_fields(self):
         fields = ['subject_cell', 'first_name', 'last_name', 'middle_name']
