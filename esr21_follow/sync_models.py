@@ -7,7 +7,8 @@ from edc_sync.sync_model import SyncModel
 sync_models = []
 app = django_apps.get_app_config('esr21_follow')
 for model in app.get_models():
-    if not issubclass(model, ListModelMixin):
+    if (not issubclass(model, ListModelMixin) and
+            model._meta.label_lower not in ['esr21_follow.followexportfile', 'esr21_follow.worklist']):
         sync_models.append(model._meta.label_lower)
 
 site_sync_models.register(sync_models, SyncModel)
